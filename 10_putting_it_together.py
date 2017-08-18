@@ -24,9 +24,17 @@ class Example(QtGui.QMainWindow):
         toolbar = self.addToolBar('Exit')
         toolbar.addAction(exitAction)
 
-        self.setGeometry(200, 200, 500, 500)
+        #self.setGeometry(200, 200, 500, 500)
+        self.resize(500, 500)
+        self.center()
         self.setWindowTitle('Main Window')
         self.show()
+
+    def center(self):
+        qr = self.frameGeometry()
+        cp = QtGui.QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
 
 def main():
     app = QtGui.QApplication(sys.argv)
