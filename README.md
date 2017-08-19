@@ -1,6 +1,13 @@
-# PySide Examples
+# PySide Training
 
-PySide Training from PyCharm
+## Python helped create the visual effects
+
+### Pipline engineers, developers
+* Python
+  * PyQt/PySide
+
+### Computer grahics research and development
+* C++
 
 ## PyCharm Tips
 * VOS(Git)
@@ -8,8 +15,3 @@ PySide Training from PyCharm
 2. Add File (Ctrl + Alt + A)
 3. Commit Changes (Ctrl + K)
 4. Push (Ctrl + Shift + K)
-
-## Python helped create the visual effects
-* Python and shell scripting is required
-* PyQt/PySide
-* C or C++
