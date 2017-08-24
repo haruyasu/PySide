@@ -7,12 +7,10 @@ class Communicate(QtCore.QObject):
 class Tetris(QtGui.QMainWindow):
     def __init__(self):
         super(Tetris, self).__init__()
-        self.initUI()
 
-    def initUI(self):
         self.setGeometry(200, 200, 500, 500)
         self.setWindowTitle('Tetris')
-        self.Tetrisboard = Board(self)
+        self.Tetrisboard = Board()
 
         self.setCentralWidget(self.Tetrisboard)
 
@@ -24,7 +22,7 @@ class Tetris(QtGui.QMainWindow):
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
-        size = self.setGeometry()
+        size = self.geometry()
         self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
 
 class Board(QtGui.QFrame):
@@ -38,6 +36,79 @@ class Board(QtGui.QFrame):
         self.timer = QtCore.QBasicTimer()
         self.isWaitingAfterLine = False
         self.curPiece = Shape()
+        self.nextPiece = Shape()
+        self.curX = 0
+        self.curY = 0
+        self.numLinesRemoved = 0
+        self.board = []
+
+        self.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.isStarted = False
+        self.isPaused = False
+        self.clearBoard()
+
+        self.c = Communicate()
+
+        self.nextPiece.setRandomShape()
+
+    def shapeAt(self, x, y):
+        return self.board[(y * Board.BoardWidth) + x]
+
+    def setShapeAt(self, x, y, shape):
+        self.board[(y * Board.BoardWidth) + x] = shape
+
+    def squareWidth(self):
+        return self.contentsRect().width() / Board.BoardWidth
+
+    def squareHeight(self):
+        return self.contentsRect().height() / Board.BoardHeight
+
+    def start(self):
+        if self.isPaused:
+            return
+        self.isStarted = True
+        self.isWaitingAfterLine = False
+        self.numLinesRemoved = ()
+        self.clearBoard()
+
+        self.c.msgToSB.emit(str(self.numLinesRemoved))
+
+        self.newPiece()
+        self.timer.start(Board.Speed, self)
+
+    def pause(self):
+        if not self.isStarted:
+            return
+
+        self.isPaused = not self.isPaused
+
+        if self.isPaused:
+            self.timer.stop()
+            self.c.msgToSB.emit("paused")
+        else:
+            self.timer.start(Board.Speed, self)
+            self.c.msgToSB.emit(str(self.numLinesRemoved))
+
+        self.update()
+
+    def paintEvent(self, event):
+        painter = QtGui.QPainter(self)
+        rect = self.contentsRect()
+
+        boardTop = rect.bottom() - Board.BoardHeight * self.squareHeight()
+
+        for i in range(Board.BoardHeight):
+            for j in range(Board.BoardWidth):
+                shape = self.shapeAt(j, Board.BoardHeight - i - 1)
+                if shape != Tetrominoes.NoShape:
+                    self.drawSquare(painter, rect.left() + j * self.squareWidth(), boardTop + i * self.squareHeight(), shape)
+
+        if self.curPiece.shape() != Tetrominoes.NoShape:
+            for i in range(4):
+                x = self.curX + self.curPiece.x(i)
+                y = self.curY - self.curPiece.y(i)
+                self.drawSquare(painter, rect.left() + x * self.squareWidth(), boardTop + (Board.BoardHeight - y - 1) * self.squareHeight(), self.curPiece.shape())
+
 
 class Tetrominoes(object):
     NoShape = 0
