@@ -109,6 +109,52 @@ class Board(QtGui.QFrame):
                 y = self.curY - self.curPiece.y(i)
                 self.drawSquare(painter, rect.left() + x * self.squareWidth(), boardTop + (Board.BoardHeight - y - 1) * self.squareHeight(), self.curPiece.shape())
 
+    def keyPressEvent(self, event):
+        if not self.isStarted or self.curPiece.shape() == Tetrominoes.NoShape:
+            QtGui.QWidget.keyPressEvent(self, event)
+            return
+
+        key = event.key()
+
+        if key == QtCore.Qt.Key_P:
+            self.pause()
+            return
+
+        if self.isPaused:
+            return
+        elif key == QtCore.Qt.Key_Left:
+            self.tryMove(self.curPiece, self.curX - 1, self.curY)
+        elif key == QtCore.Qt.Key_Right:
+            self.tryMove(self.curPiece, self.curX + 1, self.curY)
+        elif key == QtCore.Qt.Key_Down:
+            self.tryMove(self.curPiece.rotatedRight(), self.curX, self.curY)
+        elif key == QtCore.Qt.Key_Up:
+            self.tryMove(self.curPiece.rotatedLeft(), self.curX, self.curY)
+        elif key == QtCore.Qt.Key_Space:
+            self.dropDown()
+        else:
+            QtGui.QWidget.keyPressEvent(self, event)
+
+    def timerEvent(self, event):
+        if event.timerId() == self.timer.timerId():
+            if self.isWaitingAfterLine:
+                self.isWaitingAfterLine = False
+            else:
+                self.oneLineDown()
+        else:
+            QtGui.QFrame.timerEvent(self, event)
+
+    def clearBoard(self):
+        for i in range(Board.BoardHeight * Board.BoardWidth):
+            self.board.append(Tetrominoes.NoShape)
+
+    def dropDown(self):
+        newY = self.curY
+        while newY > 0:
+            if not self.tryMove(self.curPiece, self.curX, newY - 1):
+                break
+            newY -= 1
+        self.pieceDropped()
 
 class Tetrominoes(object):
     NoShape = 0
@@ -195,6 +241,18 @@ class Shape(object):
         for i in range(4):
             result.setX(i, self.y(i))
             result.setY(i, -self.x(i))
+        return result
+
+    def rotatedRight(self):
+        if self.pieceShape == Tetrominoes.SquareShape:
+            return self
+
+        result = Shape()
+        result.pieceShape = self.pieceShape
+
+        for i in range(4):
+            result.setX(i, -self.y(i))
+            result.setY(i, self.x(i))
         return result
 
 def main():
