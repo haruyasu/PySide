@@ -8,15 +8,12 @@ class Tetris(QtGui.QMainWindow):
     def __init__(self):
         super(Tetris, self).__init__()
 
-        self.setGeometry(200, 200, 500, 500)
+        self.setGeometry(200, 200, 400, 700)
         self.setWindowTitle('Tetris')
-        self.Tetrisboard = Board()
-
+        self.Tetrisboard = Board(self)
         self.setCentralWidget(self.Tetrisboard)
-
         self.statusbar = self.statusBar()
         self.Tetrisboard.c.msgToSB[str].connect(self.statusbar.showMessage)
-
         self.Tetrisboard.start()
         self.center()
 
@@ -30,7 +27,7 @@ class Board(QtGui.QFrame):
     BoardHeight = 22
     Speed = 300
 
-    def __init__(self):
+    def __init__(self, parent):
         super(Board, self).__init__()
 
         self.timer = QtCore.QBasicTimer()
@@ -41,14 +38,11 @@ class Board(QtGui.QFrame):
         self.curY = 0
         self.numLinesRemoved = 0
         self.board = []
-
         self.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.isStarted = False
         self.isPaused = False
         self.clearBoard()
-
         self.c = Communicate()
-
         self.nextPiece.setRandomShape()
 
     def shapeAt(self, x, y):
@@ -66,13 +60,12 @@ class Board(QtGui.QFrame):
     def start(self):
         if self.isPaused:
             return
+
         self.isStarted = True
         self.isWaitingAfterLine = False
-        self.numLinesRemoved = ()
+        self.numLinesRemoved = 0
         self.clearBoard()
-
         self.c.msgToSB.emit(str(self.numLinesRemoved))
-
         self.newPiece()
         self.timer.start(Board.Speed, self)
 
@@ -94,7 +87,6 @@ class Board(QtGui.QFrame):
     def paintEvent(self, event):
         painter = QtGui.QPainter(self)
         rect = self.contentsRect()
-
         boardTop = rect.bottom() - Board.BoardHeight * self.squareHeight()
 
         for i in range(Board.BoardHeight):
@@ -119,7 +111,6 @@ class Board(QtGui.QFrame):
         if key == QtCore.Qt.Key_P:
             self.pause()
             return
-
         if self.isPaused:
             return
         elif key == QtCore.Qt.Key_Left:
@@ -132,6 +123,8 @@ class Board(QtGui.QFrame):
             self.tryMove(self.curPiece.rotatedLeft(), self.curX, self.curY)
         elif key == QtCore.Qt.Key_Space:
             self.dropDown()
+        elif key == QtCore.Qt.Key_D:
+            self.oneLineDown()
         else:
             QtGui.QWidget.keyPressEvent(self, event)
 
@@ -139,6 +132,7 @@ class Board(QtGui.QFrame):
         if event.timerId() == self.timer.timerId():
             if self.isWaitingAfterLine:
                 self.isWaitingAfterLine = False
+                self.newPiece()
             else:
                 self.oneLineDown()
         else:
@@ -164,7 +158,7 @@ class Board(QtGui.QFrame):
         for i in range(4):
             x = self.curX + self.curPiece.x(i)
             y = self.curY - self.curPiece.y(i)
-            self.setShapeAt(x, y,  self.curPiece.shape())
+            self.setShapeAt(x, y, self.curPiece.shape())
 
         self.removeFullLines()
 
@@ -183,7 +177,7 @@ class Board(QtGui.QFrame):
             if n == 10:
                 rowsToRemove.append(i)
 
-        rowsToRemove.reserve()
+        rowsToRemove.reverse()
 
         for m in rowsToRemove:
             for k in range(m, Board.BoardHeight):
@@ -210,12 +204,12 @@ class Board(QtGui.QFrame):
             self.curPiece.setShape(Tetrominoes.NoShape)
             self.timer.stop()
             self.isStarted = False
-            self.c.msgToSB.emit("Game Over")
+            self.c.msgToSB.emit("GAME OVER")
 
     def tryMove(self, newPiece, newX, newY):
         for i in range(4):
             x = newX + newPiece.x(i)
-            y = newY + newPiece.y(i)
+            y = newY - newPiece.y(i)
             if x < 0 or x >= Board.BoardWidth or y < 0 or y >= Board.BoardHeight:
                 return False
             if self.shapeAt(x, y) != Tetrominoes.NoShape:
@@ -232,7 +226,7 @@ class Board(QtGui.QFrame):
                       0xCCCC66, 0xCC66CC, 0x66CCCC, 0xDAAA00]
 
         color = QtGui.QColor(colorTable[shape])
-        painter.fillRect(x + 1, y + 1, self.squareHeight() - 2, self.squareHeight() - 2, color)
+        painter.fillRect(x + 1, y + 1, self.squareWidth() - 2, self.squareHeight() - 2, color)
         painter.setPen(color.lighter())
         painter.drawLine(x, y + self.squareHeight() - 1, x, y)
         painter.drawLine(x, y, x + self.squareWidth() - 1, y)
@@ -255,7 +249,7 @@ class Shape(object):
         ((0, 0), (0, 0), (0, 0), (0, 0)),
         ((0, -1), (0, 0), (-1, 0), (-1, 1)),
         ((0, -1), (0, 0), (1, 0), (1, 1)),
-        ((0, 1), (0, 0), (0, 1), (0, 2)),
+        ((0, -1), (0, 0), (0, 1), (0, 2)),
         ((-1, 0), (0, 0), (1, 0), (0, 1)),
         ((0, 0), (1, 0), (0, 1), (1, 1)),
         ((-1, -1), (0, -1), (0, 0), (0, 1)),
@@ -263,9 +257,8 @@ class Shape(object):
     )
 
     def __init__(self):
-        self.coords = [[0, 0 ] for i in range(4)]
+        self.coords = [[0, 0] for i in range(4)]
         self.pieceShape = Tetrominoes.NoShape
-
         self.setShape(Tetrominoes.NoShape)
 
     def shape(self):
@@ -276,7 +269,6 @@ class Shape(object):
         for i in range(4):
             for j in range(2):
                 self.coords[i][j] = table[i][j]
-
         self.pieceShape = shape
 
     def setRandomShape(self):
@@ -321,6 +313,7 @@ class Shape(object):
     def rotatedLeft(self):
         if self.pieceShape == Tetrominoes.SquareShape:
             return self
+
         result = Shape()
         result.pieceShape = self.pieceShape
 
