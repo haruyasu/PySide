@@ -7,7 +7,9 @@ class Communicate(QtCore.QObject):
 class Tetris(QtGui.QMainWindow):
     def __init__(self):
         super(Tetris, self).__init__()
+        self.initUI()
 
+    def initUI(self):
         self.setGeometry(200, 200, 400, 700)
         self.setWindowTitle('Tetris')
         self.Tetrisboard = Board(self)
