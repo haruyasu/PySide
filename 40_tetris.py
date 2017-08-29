@@ -16,8 +16,17 @@ class Tetris(QtGui.QMainWindow):
         self.setCentralWidget(self.Tetrisboard)
         self.statusbar = self.statusBar()
         self.Tetrisboard.c.msgToSB[str].connect(self.statusbar.showMessage)
-        self.Tetrisboard.start()
+
+        btn1 = QtGui.QPushButton("START", self)
+        btn1.move(150, 300)
+        btn1.setStyleSheet("background-color: rgb(50,50,50); color: white; font-weight: bold; font-size: 16pt")
+        btn1.clicked.connect(self.startButtonClicked)
+        btn1.clicked.connect(btn1.hide)
+
         self.center()
+
+    def startButtonClicked(self):
+        self.Tetrisboard.start()
 
     def center(self):
         screen = QtGui.QDesktopWidget().screenGeometry()
