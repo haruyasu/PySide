@@ -23,6 +23,22 @@ class Tetris(QtGui.QMainWindow):
         btn1.clicked.connect(self.startButtonClicked)
         btn1.clicked.connect(btn1.hide)
 
+        exitAction = QtGui.QAction(QtGui.QIcon('img/linux.png'), '&Exit', self)
+        exitAction.setShortcut('Ctrl+Q')
+        exitAction.setStatusTip('Exit application')
+        exitAction.triggered.connect(self.close)
+
+        menubar = self.menuBar()
+        fileMenu = menubar.addMenu('&File')
+        fileMenu.addAction(exitAction)
+
+        label1 = QtGui.QLabel('Score: ', self)
+        label1.setStyleSheet("font-weight: bold; font-size: 15pt")
+        label1.move(30, 30)
+        label2 = QtGui.QLabel('100', self)
+        label2.setStyleSheet("font-weight: bold; font-size: 16pt")
+        label2.move(100, 30)
+
         self.center()
 
     def startButtonClicked(self):
@@ -32,6 +48,13 @@ class Tetris(QtGui.QMainWindow):
         screen = QtGui.QDesktopWidget().screenGeometry()
         size = self.geometry()
         self.move((screen.width() - size.width()) / 2, (screen.height() - size.height()) / 2)
+
+    def closeEvent(self, event):
+        reply = QtGui.QMessageBox.question(self, 'Message', "Are you sure to quit?", QtGui.QMessageBox.Yes | QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+        if reply == QtGui.QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
 
 class Board(QtGui.QFrame):
     BoardWidth = 10
