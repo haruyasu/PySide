@@ -12,34 +12,45 @@ class Tetris(QtGui.QMainWindow):
     def initUI(self):
         self.setGeometry(200, 200, 400, 700)
         self.setWindowTitle('Tetris')
+
+        # self.frm = QtGui.QFrame(self)
+        # col = QtGui.QColor(30, 30, 30)
+        # self.frm.setStyleSheet("QWidget { background-color: %s }" % col.name())
+        # self.frm.setGeometry(0, 0, 400, 700)
+
         self.Tetrisboard = Board(self)
         self.setCentralWidget(self.Tetrisboard)
         self.statusbar = self.statusBar()
         self.Tetrisboard.c.msgToSB[str].connect(self.statusbar.showMessage)
+        self.Tetrisboard.c.msgToSB[str].connect(self.onChanged)
 
-        btn1 = QtGui.QPushButton("START", self)
-        btn1.move(150, 300)
-        btn1.setStyleSheet("background-color: rgb(50,50,50); color: white; font-weight: bold; font-size: 16pt")
-        btn1.clicked.connect(self.startButtonClicked)
-        btn1.clicked.connect(btn1.hide)
+        self.btn1 = QtGui.QPushButton("START", self)
+        self.btn1.move(150, 300)
+        self.btn1.setStyleSheet("background-color: rgb(50,50,50); color: white; font-weight: bold; font-size: 16pt")
+        self.btn1.clicked.connect(self.startButtonClicked)
+        self.btn1.clicked.connect(self.btn1.hide)
 
-        exitAction = QtGui.QAction(QtGui.QIcon('img/linux.png'), '&Exit', self)
-        exitAction.setShortcut('Ctrl+Q')
-        exitAction.setStatusTip('Exit application')
-        exitAction.triggered.connect(self.close)
+        self.exitAction = QtGui.QAction(QtGui.QIcon('img/linux.png'), '&Exit', self)
+        self.exitAction.setShortcut('Ctrl+Q')
+        self.exitAction.setStatusTip('Exit application')
+        self.exitAction.triggered.connect(self.close)
 
-        menubar = self.menuBar()
-        fileMenu = menubar.addMenu('&File')
-        fileMenu.addAction(exitAction)
+        self.menubar = self.menuBar()
+        self.fileMenu = self.menubar.addMenu('&File')
+        self.fileMenu.addAction(self.exitAction)
 
-        label1 = QtGui.QLabel('Score: ', self)
-        label1.setStyleSheet("font-weight: bold; font-size: 15pt")
-        label1.move(30, 30)
-        label2 = QtGui.QLabel('100', self)
-        label2.setStyleSheet("font-weight: bold; font-size: 16pt")
-        label2.move(100, 30)
+        self.label1 = QtGui.QLabel('Score:', self)
+        self.label1.setStyleSheet("font-weight: bold; font-size: 13pt")
+        self.label1.move(10, 30)
+
+        self.label2 = QtGui.QLabel(self)
+        self.label2.move(70, 30)
+        self.label2.setStyleSheet("font-weight: bold; font-size: 12pt")
 
         self.center()
+
+    def onChanged(self, text):
+        self.label2.setText(text)
 
     def startButtonClicked(self):
         self.Tetrisboard.start()
