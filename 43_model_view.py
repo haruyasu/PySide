@@ -35,17 +35,29 @@ class CustomListModel(QtCore.QAbstractListModel):
     def flags(self, index):
         return QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsEditable
 
+class CustomListDelegate(QtGui.QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super(CustomListDelegate, self).__init__(parent)
+
+    def paint(self, painter, option, index):
+        name = index.data(QtCore.Qt.DisplayRole)
+        color = index.data(QtCore.Qt.ForegroundRole)
+        pen = QtGui.QPen(color, 0.5, QtCore.Qt.SolidLine)
+        painter.setPen(pen)
+        painter.drawText(option.rect, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft, "Name : " + name)
+
 def main():
     app = QtGui.QApplication(sys.argv)
     data = [
-        {"name":"Dog", "color":[255, 0, 0]},
-        {"name":"Cat", "color":[0, 0, 255]}
+        {"name":"Dog", "color": [255, 0, 0]},
+        {"name":"Cat", "color": [0, 0, 255]}
     ]
     myListModel = CustomListModel(data = data)
     myListView = QtGui.QListView()
     myListView.setModel(myListModel)
+    myListDelegate = CustomListDelegate()
+    myListView.setItemDelegate(myListDelegate)
     myListView.show()
-
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
