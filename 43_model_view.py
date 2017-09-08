@@ -3,6 +3,15 @@ from PySide import QtCore, QtGui
 
 CURRENT_PATH = os.path.dirname(__file__)
 
+DESCRIPTION_ROLE = QtCore.Qt.UserRole
+STATUS_ROLE = QtCore.Qt.UserRole + 1
+THUMB_ROLE = QtCore.Qt.UserRole + 2
+
+DATA = [
+    {"name": "Dog", "color": [255, 0, 0], "thumbnail": "ben.png"},
+    {"name": "Cat", "color": [0, 0, 255], "thumbnail": "natalie.png"}
+]
+
 class CustomListModel(QtCore.QAbstractListModel):
     def __init__(self, parent = None, data = []):
         super(CustomListModel, self).__init__(parent)
@@ -73,18 +82,35 @@ class CustomListDelegate(QtGui.QStyledItemDelegate):
     def sizeHint(self, option, index):
         return QtCore.QSize(100, 60)
 
+class GUI(QtGui.QMainWindow):
+    def __init__(self, parent=None):
+        super(GUI, self).__init__(parent)
+        self.setWindowTitle('Model View Delegate')
+        self.resize(350, 600)
+        self.setMaximumSize(525, 700)
+        self.initUI()
+
+    def initUI(self):
+        myListView = QtGui.QListView(self)
+        myListView.setSpacing(10)
+        myListView.setAutoFillBackground(False)
+        url = os.path.join(CURRENT_PATH, "img", "bg.png").replace("\\", "/")
+        myListView.setStyleSheet("background: url(" + url + ") center center;")
+        myListView.setVerticalScrollMode(QtGui.QAbstractItemView.ScrollPerPixel)
+
+        myListModel = CustomListModel(data=DATA)
+
+        myListDelegate = CustomListDelegate()
+
+        myListView.setModel(myListModel)
+        myListView.setItemDelegate(myListDelegate)
+
+        self.setCentralWidget(myListView)
+
 def main():
     app = QtGui.QApplication(sys.argv)
-    data = [
-        {"name":"Dog", "color": [255, 0, 0], "thumbnail": "ben.png"},
-        {"name":"Cat", "color": [0, 0, 255], "thumbnail": "natalie.png"}
-    ]
-    myListModel = CustomListModel(data = data)
-    myListView = QtGui.QListView()
-    myListView.setModel(myListModel)
-    myListDelegate = CustomListDelegate()
-    myListView.setItemDelegate(myListDelegate)
-    myListView.show()
+    ui = GUI()
+    ui.show()
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
