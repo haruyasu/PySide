@@ -8,12 +8,12 @@ STATUS_ROLE = QtCore.Qt.UserRole + 1
 THUMB_ROLE = QtCore.Qt.UserRole + 2
 
 DATA = [
-    {"name": "Dog", "color": [255, 0, 0], "thumbnail": "ben.png"},
-    {"name": "Cat", "color": [0, 0, 255], "thumbnail": "natalie.png"}
+    {"name": "Dog", "description": "Animal", "status": "OK", "color": [255, 0, 0], "thumbnail": "ben.png"},
+    {"name": "Cat", "description": "Animal", "status": "OK", "color": [0, 0, 255], "thumbnail": "natalie.png"}
 ]
 
 class CustomListModel(QtCore.QAbstractListModel):
-    def __init__(self, parent = None, data = []):
+    def __init__(self, parent = None, data = None):
         super(CustomListModel, self).__init__(parent)
         self.__items = data
 
@@ -26,12 +26,16 @@ class CustomListModel(QtCore.QAbstractListModel):
         if not 0 <= index.row() < len(self.__items):
             return None
         if role == QtCore.Qt.DisplayRole:
-            return self.__items[index.row()].get("name", "")
-        elif role == QtCore.Qt.ForegroundRole:
-            color = self.__items[index.row()].get("color", [])
-            return QtGui.QColor(*color)
-        elif role == QtCore.Qt.UserRole:
-            return self.__items[index.row()].get("thumbnail", "")
+            return self.__items[index.row()]["name"]
+        elif role == DESCRIPTION_ROLE:
+            return self.__items[index.row()]["description"]
+        elif role == STATUS_ROLE:
+            return self.__items[index.row()]["status"]
+        elif role == THUMB_ROLE:
+            return self.__items[index.row()]["thumbnail"]
+        elif role == QtCore.Qt.BackgroundRole:
+            color = self.__items[index.row()]["color"]
+            return QtGui.QColor(color[0], color[1], color[2])
         else:
             return None
 
