@@ -7,10 +7,10 @@ STATUS_ROLE = QtCore.Qt.UserRole + 1
 THUMB_ROLE = QtCore.Qt.UserRole + 2
 
 DATA = [
-    {"name":"Dog", "description":"Animal", "status":"OK", "color":[255, 0, 0], "thumbnail":"ben.png"},
-    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[0, 0, 255], "thumbnail":"natalie.png"},
-    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[0, 0, 255], "thumbnail":"natalie.png"},
-    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[0, 0, 255], "thumbnail":"natalie.png"}
+    {"name":"Dog", "description":"Animal", "status":"NOT OK", "color":[255, 0, 0], "thumbnail":"ben.png"},
+    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[0, 255, 0], "thumbnail":"natalie.png"},
+    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[0, 255, 255], "thumbnail":"natalie.png"},
+    {"name":"Cat", "description":"Animal", "status":"NOT OK", "color":[255, 0, 255], "thumbnail":"natalie.png"}
 ]
 
 class CustomListModel(QtCore.QAbstractListModel):
@@ -95,12 +95,12 @@ class CustomListDelegate(QtGui.QStyledItemDelegate):
         r = QtCore.QRect(rect.left() + self.THUMB_AREA_WIDTH + self.MARGIN, rect.top() + rect.height() / 2, rect.width() - self.THUMB_AREA_WIDTH - self.STATUS_AREA_WIDTH - self.MARGIN * 3, rect.height() / 2)
         painter.drawText(r, QtCore.Qt.AlignVCenter | QtCore.Qt.AlignLeft, description)
 
-    def drawStatus(self, painter, rect, status):
+    def drawStatus(self, painter, rect, status, selected):
         painter.setFont(self.FONT_H2)
         painter.setPen(self.TEXT_BLACK_PEN)
         r = QtCore.QRect(rect.right() - self.STATUS_AREA_WIDTH - self.MARGIN, rect.center().y() - self.STATUS_AREA_WIDTH / 2, self.STATUS_AREA_WIDTH, self.STATUS_AREA_WIDTH)
         statusIcon = "notok.png"
-        if status == "OK":
+        if (selected == True) & (status != "OK"):
             statusIcon = "ok.png"
         statusImage = QtGui.QPixmap(os.path.join(CURRENT_PATH, "img", statusIcon))
         painter.drawPixmap(r, statusImage)
@@ -118,7 +118,7 @@ class CustomListDelegate(QtGui.QStyledItemDelegate):
         self.drawThumbnail(painter, option.rect, thumbnail)
         self.drawName(painter, option.rect, name)
         self.drawDescription(painter, option.rect, description)
-        self.drawStatus(painter, option.rect, status)
+        self.drawStatus(painter, option.rect, status, selected)
 
     def sizeHint(self, option, index):
         return QtCore.QSize(self.ITEM_SIZE_HINT[0], self.ITEM_SIZE_HINT[1])
