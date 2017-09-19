@@ -1,5 +1,5 @@
 import sys
-from PySide import QtCore, QtGui
+from PySide import QtGui
 
 def print_state(state):
     if state:
