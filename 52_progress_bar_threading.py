@@ -51,7 +51,10 @@ class Worker(QtCore.QThread):
             self.updateProgress.emit(i)
             time.sleep(0.1)
 
-if __name__ == "__main__":
+def main():
     app = QtGui.QApplication(sys.argv)
     ex = Example()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
