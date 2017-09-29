@@ -12,6 +12,8 @@ class GUI(QtGui.QWidget):
 
         move_anim = self.create_move_anim(button)
 
+        move_anim.setEasingCurve(QtCore.QEasingCurve.InOutBack)
+
         def start_move_anim():
             move_anim.start()
 
