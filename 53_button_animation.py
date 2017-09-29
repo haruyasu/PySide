@@ -10,6 +10,19 @@ class GUI(QtGui.QWidget):
         button = QtGui.QPushButton("Animation Button", self)
         button.setGeometry(QtCore.QRect(0, 100, 100, 50))
 
+        move_anim = self.create_move_anim(button)
+
+        def start_move_anim():
+            move_anim.start()
+
+        button.clicked.connect(start_move_anim)
+
+    def create_move_anim(self, button):
+        animation = QtCore.QPropertyAnimation(button, "pos")
+        animation.setDuration(1000)
+        animation.setEndValue(QtCore.QPoint(button.x() + 400, button.y()))
+        return animation
+
 def main():
     app = QtGui.QApplication(sys.argv)
     gui = GUI()
