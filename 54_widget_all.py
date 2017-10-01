@@ -5,8 +5,6 @@ from PySide import QtCore, QtGui
 
 LOGO_IMAGE = os.path.dirname(__file__) + "/img/ben.png"
 
-print LOGO_IMAGE
-
 class GUI(QtGui.QMainWindow):
     def __init__(self):
         super(GUI, self).__init__()
@@ -64,6 +62,80 @@ class GUI(QtGui.QMainWindow):
         spinBox.setMaximum(10)
         spinBox.setSuffix("min")
         secondHorizontalArea.addWidget(spinBox)
+
+        mainLayout.addWidget(self.makeHorizontalLine())
+
+        # --- third row ---
+        thirdHorizontalArea = QtGui.QHBoxLayout()
+        thirdHorizontalArea.setSpacing(20)
+        mainLayout.addLayout(thirdHorizontalArea)
+
+        checkBox = QtGui.QCheckBox("Check Box")
+        thirdHorizontalArea.addWidget(checkBox)
+        checkBox.setCheckable(True)
+
+        radioArea = QtGui.QVBoxLayout()
+        thirdHorizontalArea.addLayout(radioArea)
+
+        radioGroup = QtGui.QButtonGroup(self)
+
+        radioBtn1 = QtGui.QRadioButton("Option 1")
+        radioArea.addWidget(radioBtn1)
+        radioGroup.addButton(radioBtn1)
+
+        radioBtn2 = QtGui.QRadioButton("Option 2")
+        radioArea.addWidget(radioBtn2)
+        radioGroup.addButton(radioBtn2)
+
+        radioBtn3 = QtGui.QRadioButton("Option 3")
+        radioArea.addWidget(radioBtn3)
+        radioGroup.addButton(radioBtn3)
+
+        radioBtn1.setChecked(True)
+
+        mainLayout.addWidget(self.makeHorizontalLine())
+
+        # --- fourth row ---
+        fourthHorizontalArea = QtGui.QHBoxLayout()
+        fourthHorizontalArea.setSpacing(20)
+        mainLayout.addLayout(fourthHorizontalArea)
+
+        calender = QtGui.QCalendarWidget()
+        fourthHorizontalArea.addWidget(calender)
+        calender.setMaximumWidth(300)
+
+        lcdNumber = QtGui.QLCDNumber()
+        fourthHorizontalArea.addWidget(lcdNumber)
+        lcdNumber.display(1234)
+
+        sliderArea = QtGui.QVBoxLayout()
+        fourthHorizontalArea.addLayout(sliderArea)
+
+        sliderDisplay = QtGui.QLabel("0")
+        sliderArea.addWidget(sliderDisplay)
+
+        slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        sliderArea.addWidget(slider)
+        slider.setRange(0, 100)
+        slider.setTickPosition(QtGui.QSlider.TicksBothSides)
+        slider.setSingleStep(5)
+        slider.setPageStep(10)
+        slider.setTickInterval(10)
+        slider.valueChanged.connect(lambda val: sliderDisplay.setText(str(val)))
+        slider.setValue(0)
+
+        dialDisplay = QtGui.QLabel("0")
+        sliderArea.addWidget(dialDisplay)
+        dial = QtGui.QDial()
+        sliderArea.addWidget(dial)
+        dial.setRange(0, 100)
+        dial.setSingleStep(5)
+        dial.setPageStep(10)
+        dial.setNotchesVisible(True)
+        dial.setWrapping(True)
+        dial.setNotchTarget(5)
+        dial.valueChanged.connect(lambda val: dialDisplay.setText(str(val)))
+        dial.setValue(0)
 
         mainLayout.addWidget(self.makeHorizontalLine())
 
