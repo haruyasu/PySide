@@ -19,6 +19,8 @@ class Form(QDialog):
         self.dial.valueChanged.connect(self.spinbox.setValue)
         self.spinbox.valueChanged.connect(self.dial.setValue)
 
+        # self.connect(self.dial, SIGNAL("valueChanged(int)"), self.spinbox.setValue)
+
         self.dial.valueChanged.connect(self.print_value)
 
     def print_value(self, value):
