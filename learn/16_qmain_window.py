@@ -11,6 +11,15 @@ class MainWindow(QMainWindow, mainGui.Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
+        # old syntax
+        # self.connect(self.actionExit, SIGNAL("triggered()"), self.exitApp)
+
+        # new syntax
+        self.actionExit.triggered.connect(self.exitApp)
+
+    def exitApp(self):
+        sys.exit(0)
+
 app = QApplication(sys.argv)
 form = MainWindow()
 form.show()
