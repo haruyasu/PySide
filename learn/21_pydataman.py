@@ -3,8 +3,9 @@ __modlule__ = "main"
 
 from PySide.QtCore import *
 from PySide.QtGui import *
-import sys, sqlite3, re, os, logging
+import sys, sqlite3, re, os, logging, csv
 from ui import mainWindw_PyDataMan
+import preferences, utilities
 
 appDataPath = os.environ["APPDATA"] + "\\PyDataMan\\"
 
@@ -36,6 +37,14 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
 
         self.addData.clicked.connect(self.add_button_clicked)
         self.removeRow.clicked.connect(self.remove_row_clicked)
+
+        self.actionExport.triggered.connect(self.export_action_triggered)
+        self.actionPreferences.triggered.connect(self.preferences_action_trigggered)
+        self.actionExit.triggered.connect(self.exit_action_triggered)
+
+        self.showToolbar = utilities.str2bool(self.settings.value("showToolbar", True))
+        self.mainToolbar.setVisible(self.showToolbar)
+
         self.load_initial_settings()
 
     def load_initial_settings(self):
@@ -107,11 +116,39 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
 
     def export_action_triggered(self):
         """Database export handler"""
-        pass
+        self.dbCursor.execute("SELECT * FROM Main")
+        dbFile = QFileDialog.getSaveFileName(parent=None, caption="Export database to a file", directory=".", filter="PyDataMan CSV (*.csv)")
+
+        # (' ', ' ')
+        if dbFile[0]:
+            try:
+                with open(dbFile[0], "wb") as csvFile:
+                    csvWriter = csv.writer(csvFile, delimiter=',', quotechar="\"", quoting=csv.QUOTE_MINIMAL)
+
+                    rows = self.dbCursor.fetchall()
+                    rowCount = len(rows)
+
+                    for row in rows:
+                        csvWriter.writerow(row)
+
+                    QMessageBox.information(self, __appname__, "Successfully exported " + str(rowCount) + " rows to a file\r\n" + str(QDir.toNativeSeparators(dbFile[0])) )
+            except Exception, e:
+                QMessageBox.critical(self, __appname__, "Error exporting file, error is \r\n" + str(e))
+                return
+
 
     def preferences_action_trigggered(self):
         """Fires up the Preferences dialog"""
-        pass
+        dlg = preferences.Preferences(self, showToolbar=self.showToolbar)
+        sig = dlg.checkboxsig
+
+        sig.connect(self.showHideToolbar)
+        dlg.exec_()
+
+    def showHideToolbar(self, param):
+        """shows/hodes main toolbar based on the checkbox value from preferences"""
+        self.mainToolbar.setVisible(param)
+        self.settings.setValue("showToolbar", utilities.bool2str(param))
 
     def about_action_triggered(self):
         """Opens the About dialog"""
@@ -119,7 +156,16 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
 
     def exit_action_triggered(self):
         """Closes the application"""
-        pass
+        self.close()
+
+    def closeEvent(self, event, *args, **kwargs):
+        """Overrides the default close method"""
+        result = QMessageBox.question(self, __appname__, "Are you sure upi want to exit?", QMessageBox.Yes | QMessageBox.No, QMessageBox.Yes)
+
+        if result == QMessageBox.Yes:
+            event.accept()
+        else:
+            event.ignore()
 
 def main():
     QCoreApplication.setApplicationName("PyDataMan")
