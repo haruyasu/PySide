@@ -3,7 +3,7 @@ __modlule__ = "main"
 
 from PySide.QtCore import *
 from PySide.QtGui import *
-import sys, sqlite3, re, os, logging, csv
+import sys, sqlite3, re, os, logging, csv, traceback
 from ui import mainWindw_PyDataMan
 import preferences, utilities
 
@@ -16,7 +16,8 @@ if not os.path.exists(appDataPath):
         appDataPath = os.getcwd()
 
 logging.basicConfig(filename=appDataPath + "pydataman.log",
-                    format="%(asctime)-15s: %(name)-18s - %(levelname)-8s - %(module)-15s - %(funcName)-20s - %(lineno)-6d - %(message)s")
+                    format="%(asctime)-15s: %(name)-18s - %(levelname)-8s - %(module)-15s - %(funcName)-20s - %(lineno)-6d - %(message)s",
+                    level=logging.DEBUG)
 
 logger = logging.getLogger(name="main-gui")
 
@@ -27,6 +28,7 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
     def __init__(self, parent=None):
         super(Main, self).__init__(parent)
         self.setupUi(self)
+        logger.debug("Application initialized")
 
         self.dbCursor = self.dbConn.cursor()
         self.dbCursor.execute("""CREATE TABLE IF NOT EXISTS Main(id INTEGER PRIMARY KEY,
@@ -134,8 +136,8 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
                     QMessageBox.information(self, __appname__, "Successfully exported " + str(rowCount) + " rows to a file\r\n" + str(QDir.toNativeSeparators(dbFile[0])) )
             except Exception, e:
                 QMessageBox.critical(self, __appname__, "Error exporting file, error is \r\n" + str(e))
+                logger.critical("Error exporing file the error is " + str(e) + ", dbFile[0] is " + str(dbFile[0]))
                 return
-
 
     def preferences_action_trigggered(self):
         """Fires up the Preferences dialog"""
@@ -167,11 +169,19 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
         else:
             event.ignore()
 
+def unhandled_exception(type, value, exp_traceback):
+    exception = "".join(traceback.format_exception(type, value, exp_traceback))
+    logger.critical(str(exception))
+    print str(exception)
+    sys.exit(1)
+
 def main():
     QCoreApplication.setApplicationName("PyDataMan")
     QCoreApplication.setApplicationVersion("0.1")
     QCoreApplication.setOrganizationName("PyDataMan")
     QCoreApplication.setOrganizationDomain("pydataman.com")
+
+    sys.excepthook = unhandled_exception
 
     app = QApplication(sys.argv)
     form =Main()
