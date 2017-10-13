@@ -4,7 +4,7 @@ __modlule__ = "main"
 from PySide.QtCore import *
 from PySide.QtGui import *
 import sys, sqlite3, re, os, logging, csv, traceback
-from ui import mainWindw_PyDataMan
+from ui import mainWindow_PyDataMan
 import preferences, utilities, about
 
 appDataPath = os.environ["APPDATA"] + "\\PyDataMan\\"
@@ -21,7 +21,7 @@ logging.basicConfig(filename=appDataPath + "pydataman.log",
 
 logger = logging.getLogger(name="main-gui")
 
-class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
+class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
     dbPath = appDataPath + "pydata.db"
     dbConn = sqlite3.connect(dbPath)
 

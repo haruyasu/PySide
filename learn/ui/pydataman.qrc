@@ -1,0 +1,8 @@
+<RCC>
+  <qresource>
+    <file>icons/service_manager.png</file>
+    <file>icons/export.png</file>
+    <file>icons/import.png</file>
+    <file>icons/info.png</file>
+  </qresource>
+</RCC>
