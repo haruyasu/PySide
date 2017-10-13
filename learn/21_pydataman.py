@@ -5,7 +5,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 import sys, sqlite3, re, os, logging, csv, traceback
 from ui import mainWindw_PyDataMan
-import preferences, utilities
+import preferences, utilities, about
 
 appDataPath = os.environ["APPDATA"] + "\\PyDataMan\\"
 
@@ -42,6 +42,7 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
 
         self.actionExport.triggered.connect(self.export_action_triggered)
         self.actionPreferences.triggered.connect(self.preferences_action_trigggered)
+        self.actionAbout.triggered.connect(self.about_action_triggered)
         self.actionExit.triggered.connect(self.exit_action_triggered)
 
         self.showToolbar = utilities.str2bool(self.settings.value("showToolbar", True))
@@ -154,7 +155,8 @@ class Main(QMainWindow, mainWindw_PyDataMan.Ui_mainWindow):
 
     def about_action_triggered(self):
         """Opens the About dialog"""
-        pass
+        dlg = about.About(self)
+        dlg.exec_()
 
     def exit_action_triggered(self):
         """Closes the application"""
