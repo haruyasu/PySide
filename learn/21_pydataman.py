@@ -40,6 +40,7 @@ class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
         self.addData.clicked.connect(self.add_button_clicked)
         self.removeRow.clicked.connect(self.remove_row_clicked)
 
+        self.actionImport.triggered.connect(self.import_action_triggered)
         self.actionExport.triggered.connect(self.export_action_triggered)
         self.actionPreferences.triggered.connect(self.preferences_action_trigggered)
         self.actionAbout.triggered.connect(self.about_action_triggered)
@@ -115,7 +116,15 @@ class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
 
     def import_action_triggered(self):
         """Database import handler"""
-        pass
+        dbFile = QFileDialog.getOpenFileName(parent=None, caption="Import database to a file", directory=".", filter="PyDataMan CSV (*.csv)")
+
+        if dbFile[0]:
+            try:
+                with open(dbFile[0], "rb") as csvFile:
+                    csvReader = csv.reader(csvFile, delimiter=',', quotechar="\"", quoting=csv.QUOTE_MINIMAL)
+
+            except Exception, e:
+                pass
 
     def export_action_triggered(self):
         """Database export handler"""
