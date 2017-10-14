@@ -77,7 +77,6 @@ class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
             return False
 
         currentRowCount = self.mainTable.rowCount()
-
         self.mainTable.insertRow(currentRowCount)
         self.mainTable.setItem(currentRowCount, 0, QTableWidgetItem(username))
         self.mainTable.setItem(currentRowCount, 1, QTableWidgetItem(firstname))
@@ -124,7 +123,23 @@ class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
                     csvReader = csv.reader(csvFile, delimiter=',')
 
                     for row in csvReader:
-                        print row[0], row[1], row[3], row[5]
+                        username = row[1]
+                        firstname = row[2]
+                        phone = row[3]
+                        address = row[4]
+                        approved = row[5]
+
+                        parameters = (None, username, firstname, phone, address, str(approved))
+                        self.dbCursor.execute("""INSERT INTO Main VALUES (?, ?, ?, ?, ?, ?)""", parameters)
+                        self.dbConn.commit()
+
+                    # currentRowCount = self.mainTable.rowCount()
+                    # self.mainTable.insertRow(currentRowCount)
+                    # self.mainTable.setItem(currentRowCount, 0, QTableWidgetItem(username))
+                    # self.mainTable.setItem(currentRowCount, 1, QTableWidgetItem(firstname))
+                    # self.mainTable.setItem(currentRowCount, 2, QTableWidgetItem(phone))
+                    # self.mainTable.setItem(currentRowCount, 3, QTableWidgetItem(address))
+                    # self.mainTable.setItem(currentRowCount, 4, QTableWidgetItem("Approved" if approved else "Not approved"))
 
             except Exception, e:
                 pass
