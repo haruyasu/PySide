@@ -120,8 +120,11 @@ class Main(QMainWindow, mainWindow_PyDataMan.Ui_mainWindow):
 
         if dbFile[0]:
             try:
-                with open(dbFile[0], "rb") as csvFile:
-                    csvReader = csv.reader(csvFile, delimiter=',', quotechar="\"", quoting=csv.QUOTE_MINIMAL)
+                with open(dbFile[0]) as csvFile:
+                    csvReader = csv.reader(csvFile, delimiter=',')
+
+                    for row in csvReader:
+                        print row[0], row[1], row[3], row[5]
 
             except Exception, e:
                 pass
