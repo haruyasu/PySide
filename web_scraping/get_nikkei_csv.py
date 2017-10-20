@@ -46,6 +46,3 @@ print time, nikkei_heikin
 csv_list.append(nikkei_heikin)
 writer.writerow(csv_list)
 f.close()
-
-
-
