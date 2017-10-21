@@ -1,11 +1,12 @@
 import os, sys
 from functools import partial
 import time
-from PySide import QtCore, QtGui
+from PySide.QtCore import *
+from PySide.QtGui import *
 
 LOGO_IMAGE = os.path.dirname(__file__) + "/img/ben.png"
 
-class GUI(QtGui.QMainWindow):
+class GUI(QMainWindow):
     def __init__(self):
         super(GUI, self).__init__()
         self.initUI()
@@ -13,51 +14,51 @@ class GUI(QtGui.QMainWindow):
     def initUI(self):
         self.setWindowTitle("Widget ALL")
         self.resize(600, 600)
-        wrapper = QtGui.QWidget()
+        wrapper = QWidget()
         self.setCentralWidget(wrapper)
-        mainLayout = QtGui.QVBoxLayout()
+        mainLayout = QVBoxLayout()
         wrapper.setLayout(mainLayout)
 
         # --- first row ---
-        firstHolizontalArea = QtGui.QHBoxLayout()
+        firstHolizontalArea = QHBoxLayout()
         firstHolizontalArea.setSpacing(20)
         mainLayout.addLayout(firstHolizontalArea)
 
-        labelArea = QtGui.QVBoxLayout()
+        labelArea = QVBoxLayout()
         firstHolizontalArea.addLayout(labelArea)
 
-        labelWidget = QtGui.QLabel("Text is shown like this.")
+        labelWidget = QLabel("Text is shown like this.")
         labelArea.addWidget(labelWidget)
 
-        imageWidget = QtGui.QLabel()
-        imageWidget.setPixmap(QtGui.QPixmap(LOGO_IMAGE))
+        imageWidget = QLabel()
+        imageWidget.setPixmap(QPixmap(LOGO_IMAGE))
         labelArea.addWidget(imageWidget)
         labelArea.addStretch()
 
-        textArea = QtGui.QTextEdit()
+        textArea = QTextEdit()
         textArea.setPlainText("Text are \ncan be set\nmultiple lines and HTML")
         firstHolizontalArea.addWidget(textArea)
 
         mainLayout.addWidget(self.makeHorizontalLine())
 
         # --- second row ---
-        secondHorizontalArea = QtGui.QHBoxLayout()
+        secondHorizontalArea = QHBoxLayout()
         secondHorizontalArea.setSpacing(20)
         mainLayout.addLayout(secondHorizontalArea)
 
-        lineEdit = QtGui.QLineEdit()
+        lineEdit = QLineEdit()
         lineEdit.setMaximumWidth(200)
         lineEdit.setText("This widget is useful for inputting text")
         secondHorizontalArea.addWidget(lineEdit)
 
-        comboBox = QtGui.QComboBox()
+        comboBox = QComboBox()
         comboBox.addItems(["AA", "BB", "CC"])
         comboBox.setEditable(True)
-        comboBox.setInsertPolicy(QtGui.QComboBox.NoInsert)
-        comboBox.completer().setCompletionMode(QtGui.QCompleter.PopupCompletion)
+        comboBox.setInsertPolicy(QComboBox.NoInsert)
+        comboBox.completer().setCompletionMode(QCompleter.PopupCompletion)
         secondHorizontalArea.addWidget(comboBox)
 
-        spinBox = QtGui.QSpinBox()
+        spinBox = QSpinBox()
         spinBox.setMinimum(0)
         spinBox.setMaximum(10)
         spinBox.setSuffix("min")
@@ -66,28 +67,28 @@ class GUI(QtGui.QMainWindow):
         mainLayout.addWidget(self.makeHorizontalLine())
 
         # --- third row ---
-        thirdHorizontalArea = QtGui.QHBoxLayout()
+        thirdHorizontalArea = QHBoxLayout()
         thirdHorizontalArea.setSpacing(20)
         mainLayout.addLayout(thirdHorizontalArea)
 
-        checkBox = QtGui.QCheckBox("Check Box")
+        checkBox = QCheckBox("Check Box")
         thirdHorizontalArea.addWidget(checkBox)
         checkBox.setCheckable(True)
 
-        radioArea = QtGui.QVBoxLayout()
+        radioArea = QVBoxLayout()
         thirdHorizontalArea.addLayout(radioArea)
 
-        radioGroup = QtGui.QButtonGroup(self)
+        radioGroup = QButtonGroup(self)
 
-        radioBtn1 = QtGui.QRadioButton("Option 1")
+        radioBtn1 = QRadioButton("Option 1")
         radioArea.addWidget(radioBtn1)
         radioGroup.addButton(radioBtn1)
 
-        radioBtn2 = QtGui.QRadioButton("Option 2")
+        radioBtn2 = QRadioButton("Option 2")
         radioArea.addWidget(radioBtn2)
         radioGroup.addButton(radioBtn2)
 
-        radioBtn3 = QtGui.QRadioButton("Option 3")
+        radioBtn3 = QRadioButton("Option 3")
         radioArea.addWidget(radioBtn3)
         radioGroup.addButton(radioBtn3)
 
@@ -96,37 +97,37 @@ class GUI(QtGui.QMainWindow):
         mainLayout.addWidget(self.makeHorizontalLine())
 
         # --- fourth row ---
-        fourthHorizontalArea = QtGui.QHBoxLayout()
+        fourthHorizontalArea = QHBoxLayout()
         fourthHorizontalArea.setSpacing(20)
         mainLayout.addLayout(fourthHorizontalArea)
 
-        calender = QtGui.QCalendarWidget()
+        calender = QCalendarWidget()
         fourthHorizontalArea.addWidget(calender)
         calender.setMaximumWidth(300)
 
-        lcdNumber = QtGui.QLCDNumber()
+        lcdNumber = QLCDNumber()
         fourthHorizontalArea.addWidget(lcdNumber)
         lcdNumber.display(1234)
 
-        sliderArea = QtGui.QVBoxLayout()
+        sliderArea = QVBoxLayout()
         fourthHorizontalArea.addLayout(sliderArea)
 
-        sliderDisplay = QtGui.QLabel("0")
+        sliderDisplay = QLabel("0")
         sliderArea.addWidget(sliderDisplay)
 
-        slider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        slider = QSlider(Qt.Horizontal)
         sliderArea.addWidget(slider)
         slider.setRange(0, 100)
-        slider.setTickPosition(QtGui.QSlider.TicksBothSides)
+        slider.setTickPosition(QSlider.TicksBothSides)
         slider.setSingleStep(5)
         slider.setPageStep(10)
         slider.setTickInterval(10)
         slider.valueChanged.connect(lambda val: sliderDisplay.setText(str(val)))
         slider.setValue(0)
 
-        dialDisplay = QtGui.QLabel("0")
+        dialDisplay = QLabel("0")
         sliderArea.addWidget(dialDisplay)
-        dial = QtGui.QDial()
+        dial = QDial()
         sliderArea.addWidget(dial)
         dial.setRange(0, 100)
         dial.setSingleStep(5)
@@ -139,15 +140,87 @@ class GUI(QtGui.QMainWindow):
 
         mainLayout.addWidget(self.makeHorizontalLine())
 
+        # --- fifth row ---
+        fifthHorizontalArea = QHBoxLayout()
+        fifthHorizontalArea.setSpacing(20)
+        mainLayout.addLayout(fifthHorizontalArea)
+
+        fifthHorizontalArea.addWidget(self.makeListWidget())
+        fifthHorizontalArea.addWidget(self.makeTabWidget())
+        fifthHorizontalArea.addWidget(self.makeTreeWidget())
+
+        mainLayout.addWidget(self.makeHorizontalLine())
 
     def makeHorizontalLine(self):
-        hline = QtGui.QFrame()
-        hline.setFrameShape(QtGui.QFrame.HLine)
-        hline.setFrameShadow(QtGui.QFrame.Sunken)
+        hline = QFrame()
+        hline.setFrameShape(QFrame.HLine)
+        hline.setFrameShadow(QFrame.Sunken)
         return hline
 
+    def makeListWidget(self):
+        listWidget = QListWidget()
+        listWidget.setMaximumWidth(100)
+        listWidget.addItems(["this", "is", "list", "widget"])
+        return listWidget
+
+    def makeTabWidget(self):
+        tableWidget = QTableWidget()
+        headerLabels = ["Name", "Age", "Sex"]
+        tableWidget.setColumnCount(len(headerLabels))
+        tableWidget.setHorizontalHeaderLabels(headerLabels)
+        tableWidget.verticalHeader().setVisible(False)
+
+        try:
+            tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        except:
+            tableWidget.horizontalHeader().setResizeMode(QHeaderView.Interactive)
+
+        tableWidget.setAlternatingRowColors(True)
+        tableWidget.horizontalHeader().setStretchLastSection(True)
+        dataList = [
+            ["Sum", "25", "Male"],
+            ["Bob", "26", "Male"],
+            ["Erena", "22", "Female"]
+        ]
+        tableWidget.setRowCount(len(dataList))
+
+        for row, colData in enumerate(dataList):
+            for col, value in enumerate(colData):
+                item = QTableWidgetItem(value)
+                tableWidget.setItem(row, col, item)
+
+        return tableWidget
+
+    def makeTreeWidget(self):
+        treeWidget = QTreeWidget()
+        headerLabels = ["Name", "Age"]
+        treeWidget.setColumnCount(len(headerLabels))
+        treeWidget.setHeaderLabels(headerLabels)
+        treeWidget.setAlternatingRowColors(True)
+        treeData = {
+            "Male":[
+                {"name":"Jon", "age":"20"},
+                {"name":"Ken", "age":"24"},
+                {"name":"Alex", "age":"26"}
+            ],
+            "Female":[
+                {"name":"Rucy", "age":"19"},
+                {"name":"Queen", "age":"22"}
+            ]
+        }
+
+        for sex, profiles in treeData.iteritems():
+            topItem = QTreeWidgetItem([sex])
+            treeWidget.addTopLevelItem(topItem)
+
+            for profile in profiles:
+                childItem = QTreeWidgetItem(topItem, [profile.get("name"), profile.get("age")])
+
+        treeWidget.expandAll()
+        return treeWidget
+
 def main():
-    app = QtGui.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     ui = GUI()
     ui.show()
     sys.exit(app.exec_())
