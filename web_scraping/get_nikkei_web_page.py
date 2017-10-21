@@ -20,5 +20,3 @@ for tag in span:
         pass
 
 print nikkei_heikin
-
-
