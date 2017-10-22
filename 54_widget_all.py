@@ -6,10 +6,41 @@ from PySide.QtGui import *
 
 LOGO_IMAGE = os.path.dirname(__file__) + "/img/ben.png"
 
+class MyDialog(QDialog):
+    def __init__(self, parent = None, f = 0):
+        super(MyDialog, self).__init__(parent, f)
+
+        mainLayout = QVBoxLayout()
+        self.setLayout(mainLayout)
+
+        imageWidget = QLabel()
+        imageWidget.setPixmap(QPixmap(LOGO_IMAGE))
+        mainLayout.addWidget(imageWidget)
+
+        description = QLabel("This is coustom dialog.")
+        mainLayout.addWidget(description)
+
+        self.inputWidget = QLineEdit()
+        mainLayout.addWidget(self.inputWidget)
+
+        buttonArea = QHBoxLayout()
+        mainLayout.addLayout(buttonArea)
+        buttonArea.addStretch()
+        okBtn = QPushButton("OK")
+        buttonArea.addWidget(okBtn)
+        okBtn.clicked.connect(self.accept)
+        cancelBtn = QPushButton("Cancel")
+        buttonArea.addWidget(cancelBtn)
+        cancelBtn.clicked.connect(self.reject)
+
+    def getInputText(self):
+        return self.inputWidget.text()
+
 class GUI(QMainWindow):
     def __init__(self):
         super(GUI, self).__init__()
         self.initUI()
+        self.errorDialog = QErrorMessage(self)
 
     def initUI(self):
         self.setWindowTitle("Widget ALL")
@@ -151,7 +182,7 @@ class GUI(QMainWindow):
 
         mainLayout.addWidget(self.makeHorizontalLine())
 
-    # --- sixth row ---
+        # --- sixth row ---
         sixthHorizontalArea = QHBoxLayout()
         sixthHorizontalArea.setSpacing(20)
         mainLayout.addLayout(sixthHorizontalArea)
@@ -168,6 +199,26 @@ class GUI(QMainWindow):
         sixthHorizontalArea.addWidget(fileDialogBtn)
         fileDialogBtn.clicked.connect(partial(QFileDialog.getOpenFileName, self, "File Select", options = QFileDialog.DontUseNativeDialog))
 
+        # --- seventh row ---
+        seventhHorizontalArea = QHBoxLayout()
+        seventhHorizontalArea.setSpacing(20)
+        mainLayout.addLayout(seventhHorizontalArea)
+
+        errorMsgBtn = QPushButton("Error Dialog")
+        seventhHorizontalArea.addWidget(errorMsgBtn)
+        errorMsgBtn.clicked.connect(self.showErrorDialog)
+
+        inputDialogTextBtn = QPushButton("Input (text)")
+        seventhHorizontalArea.addWidget(inputDialogTextBtn)
+        inputDialogTextBtn.clicked.connect(self.showInputTextDialog)
+
+        inputDialogComboBtn = QPushButton("Input (combo)")
+        seventhHorizontalArea.addWidget(inputDialogComboBtn)
+        inputDialogComboBtn.clicked.connect(self.showInputComboDialog)
+
+        dialogBtn = QPushButton("Custom Dialog")
+        seventhHorizontalArea.addWidget(dialogBtn)
+        dialogBtn.clicked.connect(self.showCustomDialog)
 
 
     def makeHorizontalLine(self):
@@ -253,6 +304,29 @@ class GUI(QMainWindow):
             progressDialog.setLabelText("Progress... %d %%" % count)
             time.sleep(0.1)
 
+    def showErrorDialog(self):
+        self.errorDialog.showMessage("This is error message.")
+
+    def showInputTextDialog(self):
+        response = QInputDialog.getText(self,
+                                        "Input Text",
+                                        "Input text here.")
+        print response
+
+    def showInputComboDialog(self):
+        response = QInputDialog.getItem(self,
+                                        "Select Item",
+                                        "Select item from the combo box.",
+                                        ["item1", "item2", "item3", "item4"],
+                                        editable = False)
+        print response
+
+    def showCustomDialog(self):
+        dialog = MyDialog()
+        response = dialog.exec_()
+
+        if response == QDialog.Accepted:
+            print dialog.getInputText()
 
 def main():
     app = QApplication(sys.argv)
