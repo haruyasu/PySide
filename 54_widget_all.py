@@ -151,6 +151,25 @@ class GUI(QMainWindow):
 
         mainLayout.addWidget(self.makeHorizontalLine())
 
+    # --- sixth row ---
+        sixthHorizontalArea = QHBoxLayout()
+        sixthHorizontalArea.setSpacing(20)
+        mainLayout.addLayout(sixthHorizontalArea)
+
+        msgBoxBtn = QPushButton("Message Dialog")
+        sixthHorizontalArea.addWidget(msgBoxBtn)
+        msgBoxBtn.clicked.connect(partial(QMessageBox().information, self, "Message", "This is normal information message."))
+
+        progressDialogBtn = QPushButton("Progress Dialog")
+        sixthHorizontalArea.addWidget(progressDialogBtn)
+        progressDialogBtn.clicked.connect(self.showProgressDialog)
+
+        fileDialogBtn = QPushButton("File Dialog")
+        sixthHorizontalArea.addWidget(fileDialogBtn)
+        fileDialogBtn.clicked.connect(partial(QFileDialog.getOpenFileName, self, "File Select", options = QFileDialog.DontUseNativeDialog))
+
+
+
     def makeHorizontalLine(self):
         hline = QFrame()
         hline.setFrameShape(QFrame.HLine)
@@ -218,6 +237,22 @@ class GUI(QMainWindow):
 
         treeWidget.expandAll()
         return treeWidget
+
+    def showProgressDialog(self):
+        max = 100
+        progressDialog = QProgressDialog("Progress...", "Cancel", 0, max, self)
+        progressDialog.setWindowTitle("Progress Dialog")
+
+        for count in range(max + 1):
+            qApp.processEvents()
+
+            if progressDialog.wasCanceled():
+                break
+
+            progressDialog.setValue(count)
+            progressDialog.setLabelText("Progress... %d %%" % count)
+            time.sleep(0.1)
+
 
 def main():
     app = QApplication(sys.argv)
