@@ -220,6 +220,18 @@ class GUI(QMainWindow):
         seventhHorizontalArea.addWidget(dialogBtn)
         dialogBtn.clicked.connect(self.showCustomDialog)
 
+        # --- dock widget ---
+        dockWidget = QDockWidget("Dock Window", self)
+        dockWrapper = QWidget()
+        dockWidget.setWidget(dockWrapper)
+        dockWidget.setAllowedAreas(Qt.RightDockWidgetArea | Qt.BottomDockWidgetArea)
+        dockLayout = QVBoxLayout()
+        dockWrapper.setLayout(dockLayout)
+        dockDescription = QLabel("This is dock widget contents.")
+        dockLayout.addWidget(dockDescription)
+        dockButton = QPushButton("OK")
+        dockLayout.addWidget(dockButton)
+        self.addDockWidget(Qt.BottomDockWidgetArea, dockWidget)
 
     def makeHorizontalLine(self):
         hline = QFrame()
