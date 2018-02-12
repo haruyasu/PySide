@@ -27,24 +27,30 @@
     * pyside-rcc.exe icons.qrc -o icons_rc.py
 
 ### Coding Conventions
-## Class names
+#### Class names
 o class MyClassName(object):
+
 x class myclassName(object):
 
-## Variable names
+#### Variable names
 o skin_joints = ['joint1', 'joint2']
+
 x skinJoints = ['joint1', 'joint2']
 
-## Function names
+####  Function names
 o def calculate_bounds():
+
 x def calculateBounds():
 
-## Spacing
+####  Spacing
 o [1, 2, 3, 4]
+
 x [1,2,3,4]
 
 o if joint_height > 10.0:
+
 x if joint_height>10.0:
 
 o get_export_nodes(root='skeleton_grp')
+
 x get_export_nodes( root = 'skeleton_grp' )
