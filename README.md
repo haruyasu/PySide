@@ -27,6 +27,9 @@
     * pyside-rcc.exe icons.qrc -o icons_rc.py
 
 ## Coding Conventions
+PEP 8 -- Style Guide for Python Code
+https://www.python.org/dev/peps/pep-0008/
+
 ### Class names
 o class MyClassName(object):
 
