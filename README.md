@@ -27,34 +27,59 @@
     * pyside-rcc.exe icons.qrc -o icons_rc.py
 
 ## Coding Conventions
-PEP 8 -- Style Guide for Python Code
-
+PEP 8 -- Style Guide for Python Code  
 https://www.python.org/dev/peps/pep-0008/
 
 ### Class names
-o class MyClassName(object):
-
+o class MyClassName(object):  
 x class myclassName(object):
 
 ### Variable names
-o skin_joints = ['joint1', 'joint2']
-
+o skin_joints = ['joint1', 'joint2']  
 x skinJoints = ['joint1', 'joint2']
 
 ###  Function names
-o def calculate_bounds():
-
+o def calculate_bounds():  
 x def calculateBounds():
 
 ###  Spacing
-o [1, 2, 3, 4]
-
-x [1,2,3,4]
-
-o if joint_height > 10.0:
-
-x if joint_height>10.0:
-
-o get_export_nodes(root='skeleton_grp')
-
+o [1, 2, 3, 4]  
+x [1,2,3,4]  
+o if joint_height > 10.0:  
+x if joint_height>10.0:  
+o get_export_nodes(root='skeleton_grp')  
 x get_export_nodes( root = 'skeleton_grp' )
+
+## list comprehension
+### for
+```
+data = [1, 2, 3, 4, 5]
+newData = []
+for d in data:
+  newData.append(d * 2)
+```
+```
+newData = [d * 2 for d in data]
+```
+
+### if
+```
+newData = []
+for d in data:
+    if d % 2 == 0:
+        newData.append(d * 2)
+```
+```
+newData = [d * 2 for d in data if d % 2 == 0]
+```
+
+### lamda
+```
+newData = []
+for d in data:
+    if d % 2 == 0:
+        newData.append(d)
+```
+```
+newData = filter(lambda x:x%2==0, data)
+```
